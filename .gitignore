@@ -1,0 +1,30 @@
+# Laravel / Node
+vendor/
+node_modules/
+public/build/
+storage/*.key
+.env
+.env.*
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Composer / NPM
+composer.lock
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Logs / cache
+storage/logs/*.log
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/testing/*
+bootstrap/cache/*.php
+
+# Misc
+phpunit.result.cache
+*.sqlite

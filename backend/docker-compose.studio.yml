@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: ./vendor/laravel/sail/runtimes/8.4
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP}'
+    image: studio-app
+    container_name: studio-app
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '${APP_PORT:-8081}:80'
+    environment:
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - pgsql
+      - redis
+    networks:
+      - studio
+
+  queue:
+    image: studio-app
+    container_name: studio-queue
+    working_dir: /var/www/html
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - studio
+
+  scheduler:
+    image: studio-app
+    container_name: studio-scheduler
+    working_dir: /var/www/html
+    command: php artisan schedule:work
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - studio
+
+  pgsql:
+    image: postgres:18-alpine
+    container_name: studio-pgsql
+    environment:
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    volumes:
+      - studio-pgsql:/var/lib/postgresql/data
+    networks:
+      - studio
+    shm_size: 128mb
+
+  redis:
+    image: redis:alpine
+    container_name: studio-redis
+    volumes:
+      - studio-redis:/data
+    networks:
+      - studio
+
+networks:
+  studio:
+    driver: bridge
+
+volumes:
+  studio-pgsql:
+    driver: local
+  studio-redis:
+    driver: local
