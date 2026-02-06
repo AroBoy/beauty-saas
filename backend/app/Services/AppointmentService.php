@@ -185,11 +185,11 @@ class AppointmentService
 
     protected function reminderBody(Appointment $appointment): string
     {
-        $salonName = $appointment->salon->name;
-        $starts = $appointment->starts_at->format('Y-m-d H:i');
-        $phone = $appointment->salon->phone;
+        $salonName = $appointment->salon->name ?? 'Studio Fryzur';
+        $date = $appointment->starts_at->format('Y-m-d');
+        $time = $appointment->starts_at->format('H:i');
 
-        return trim("Przypomnienie: wizyta {$starts} {$salonName}" . ($phone ? ". Kontakt: {$phone}" : ''));
+        return "{$salonName} przypomina o wizycie w dniu {$date} o godz {$time}\nPROSZĘ O POTWIERDZENIE WIZYTY";
     }
 
     protected function resolveSalonId(int $workerId): int

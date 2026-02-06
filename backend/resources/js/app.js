@@ -18,9 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!calendarEl) return;
 
     const date = calendarEl.dataset.date;
-    const feedUrl = calendarEl.dataset.feed;
-    const resourcesUrl = calendarEl.dataset.resources;
-    const moveBase = calendarEl.dataset.move;
+    const apiBase = (calendarEl.dataset.apiBase || window.location.origin).replace(/\/$/, '');
+    const buildUrl = (u) => {
+        if (!u) return '';
+        if (/^https?:\/\//i.test(u)) return u; // already absolute
+        return `${apiBase}${u.startsWith('/') ? '' : '/'}${u}`;
+    };
+    const feedUrl = buildUrl(calendarEl.dataset.feed);
+    const resourcesUrl = buildUrl(calendarEl.dataset.resources);
+    const moveBase = buildUrl(calendarEl.dataset.move);
     const modal = document.getElementById('quick-appointment-modal');
     const backdrop = document.getElementById('quick-appointment-backdrop');
     const form = document.getElementById('quick-appointment-form');
@@ -38,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextDayBtn = document.getElementById('next-day');
     const todayBtn = document.getElementById('today');
     const datePickerInput = document.getElementById('date-picker');
-    const clientsSearchUrl = calendarEl.dataset.clientsSearch;
+    const clientsSearchUrl = buildUrl(calendarEl.dataset.clientsSearch);
     let searchTimeout = null;
     let suggestionItems = [];
     let suggestionIndex = -1;
@@ -57,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModal = document.getElementById('edit-appointment-modal');
     const editBackdrop = document.getElementById('edit-backdrop');
     const editForm = document.getElementById('edit-appointment-form');
+    const editAppointmentIdInput = document.getElementById('edit-appointment-id');
     const editStartInput = document.getElementById('edit-start');
     const editDurationInput = document.getElementById('edit-duration');
     const editWorkerSelect = document.getElementById('edit-worker');
@@ -97,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         slotMaxTime: '22:00:00',
         slotDuration: '00:15:00',
         slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
+        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         headerToolbar: false,
         allDaySlot: false,
         editable: true,
@@ -141,7 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({
                 worker_id: info.newResource ? info.newResource.id : info.event.getResources()[0].id,
                 starts_at: info.event.start.toISOString(),
@@ -245,6 +255,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const normalizePrice = (value) => {
+        if (!value) return null;
+        const normalized = value.replace(',', '.').trim();
+        const num = Number(normalized);
+        return Number.isFinite(num) ? num : null;
+    };
+
     form?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const payload = {
@@ -253,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
             service_id: serviceSelect.value,
             starts_at: startInput.value,
             duration_min: durationInput.value,
-            price_charged: priceInput.value || null,
+            price_charged: normalizePrice(priceInput.value),
             status: 'planned',
         };
 
@@ -264,11 +281,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                 'Accept': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(payload),
         });
 
         if (!resp.ok) {
-            alert('Nie udało się zapisać wizyty.');
+            const msg = await resp.text().catch(() => '');
+            alert(`Nie udało się zapisać wizyty. (${resp.status}) ${msg}`);
             return;
         }
 
@@ -367,7 +386,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function openEditModal(event) {
         if (!editModal) return;
         editModal.dataset.id = event.id;
-        editModal.dataset.updateUrl = `${moveBase}/${event.id}`;
+        editModal.dataset.updateUrl = `${window.location.origin}/appointments/${event.id}`;
+        if (editAppointmentIdInput) editAppointmentIdInput.value = event.id;
         editWorkerSelect.value = event.getResources()[0]?.id || '';
         editServiceSelect.value = event.extendedProps.service_id || '';
         editDurationInput.value = event.extendedProps.duration_min || (event.end ? (event.end - event.start) / 60000 : 30);
@@ -410,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                         'Accept': 'application/json',
                     },
-                    credentials: 'same-origin',
+                    credentials: 'include',
                 });
                 if (!resp.ok) {
                     const text = await resp.text();
@@ -435,16 +455,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     editForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const updateUrl = editModal.dataset.updateUrl;
-        if (!updateUrl) return;
+        const appointmentId = editAppointmentIdInput?.value || editModal?.dataset?.id;
+        const updateUrl = appointmentId ? `${moveBase}/${appointmentId}` : moveBase;
+        console.debug('Updating appointment', { appointmentId, updateUrl, payloadPreview: editStartInput.value });
         const payload = {
             worker_id: editWorkerSelect.value,
             client_id: editClientIdInput.value,
             service_id: editServiceSelect.value,
             starts_at: editStartInput.value,
             duration_min: editDurationInput.value,
-            price_charged: editPriceInput.value || null,
+            price_charged: normalizePrice(editPriceInput.value),
             status: 'planned',
+            appointment_id: appointmentId || null,
         };
 
         const resp = await fetch(updateUrl, {
@@ -454,11 +476,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                 'Accept': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(payload),
         });
 
         if (!resp.ok) {
-            alert('Nie udało się zapisać wizyty.');
+            const msg = await resp.text().catch(() => '');
+            alert(`Nie udało się zapisać wizyty. (${resp.status}) ${msg}`);
             return;
         }
 

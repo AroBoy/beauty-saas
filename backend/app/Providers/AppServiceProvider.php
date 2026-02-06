@@ -9,6 +9,9 @@ use App\Models\Service;
 use App\Models\SmsJob;
 use App\Models\Worker;
 use App\Support\Tenant;
+use App\Services\Sms\FakeSmsGateway;
+use App\Services\Sms\SmsapiGateway;
+use App\Services\Sms\SmsGateway;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,7 +22,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(SmsGateway::class, function () {
+            $driver = config('sms.driver');
+
+            return match ($driver) {
+                'smsapi' => new SmsapiGateway(
+                    token: config('sms.smsapi.token'),
+                    endpoint: config('sms.smsapi.endpoint')
+                ),
+                default => new FakeSmsGateway(),
+            };
+        });
     }
 
     /**

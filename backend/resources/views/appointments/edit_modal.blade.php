@@ -16,6 +16,7 @@
         <form id="edit-appointment-form" class="space-y-4">
             @csrf
             @method('PUT')
+            <input type="hidden" id="edit-appointment-id" name="appointment_id">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Pracownik</label>

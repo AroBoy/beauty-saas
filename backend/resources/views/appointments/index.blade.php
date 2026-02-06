@@ -28,10 +28,11 @@
             <div
                 id="calendar"
                 data-date="{{ $date }}"
+                data-api-base="{{ config('app.url') }}"
                 data-feed="{{ route('appointments.feed') }}"
                 data-resources="{{ route('appointments.resources') }}"
                 data-clients-search="{{ route('clients.search') }}"
-                data-move="{{ url('appointments') }}"
+                data-move="{{ route('appointments.index') }}"
                 class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
             ></div>
         </div>

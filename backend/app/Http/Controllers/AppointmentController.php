@@ -46,9 +46,13 @@ class AppointmentController extends Controller
         return $this->formView(new Appointment());
     }
 
-    public function store(AppointmentRequest $request): RedirectResponse
+    public function store(AppointmentRequest $request)
     {
         $this->service->create($request->validated());
+
+        if ($request->expectsJson()) {
+            return response()->noContent();
+        }
 
         return redirect()->route('appointments.index')->with('status', 'Wizyta dodana.');
     }
@@ -58,9 +62,13 @@ class AppointmentController extends Controller
         return $this->formView($appointment);
     }
 
-    public function update(AppointmentRequest $request, Appointment $appointment): RedirectResponse
+    public function update(AppointmentRequest $request, Appointment $appointment)
     {
         $this->service->update($appointment, $request->validated());
+
+        if ($request->expectsJson()) {
+            return response()->noContent();
+        }
 
         return redirect()->route('appointments.index')->with('status', 'Wizyta zaktualizowana.');
     }
