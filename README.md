@@ -1,6 +1,39 @@
-# Studio - system rezerwacji wizyt (Laravel)
+# Beauty SaaS - Salon Management System
 
-Projekt to aplikacja do zarzadzania salonem: pracownikami, klientami, uslugami, kalendarzem wizyt oraz SMS-ami (potwierdzenia i przypomnienia).
+Multi-tenant SaaS application for managing beauty salons.
+
+Features:
+- appointment calendar
+- SMS reminders
+- client management
+- worker scheduling
+
+Tech stack:
+- Laravel 12
+- PostgreSQL
+- Redis
+- Docker
+
+## Demo
+
+- Production: [https://studio.cudawiankiphoto.pl](https://studio.cudawiankiphoto.pl)
+
+## Screenshots
+
+- Dashboard: `docs/screenshots/dashboard.png`
+- Architecture diagram: `docs/architecture.png`
+
+## Architektura (skrot)
+
+```text
+Cloudflare
+   |
+Laravel App (Docker)
+   |
+PostgreSQL
+   |
+Redis + Queue Workers + Scheduler
+```
 
 ## Funkcje
 
@@ -15,14 +48,6 @@ Projekt to aplikacja do zarzadzania salonem: pracownikami, klientami, uslugami, 
 - `booking_confirmation` po utworzeniu wizyty
 - `reminder` przed wizyta
 - Integracja z SMSAPI przez token.
-
-## Stack
-
-- PHP 8.4 + Laravel 12
-- PostgreSQL
-- Redis
-- Vite + Tailwind + Blade
-- Docker Compose (Sail runtime)
 
 ## Struktura repo
 
@@ -43,7 +68,7 @@ Projekt to aplikacja do zarzadzania salonem: pracownikami, klientami, uslugami, 
 cd backend
 ```
 
-2. Skonfiguruj `.env` (na bazie `.env.example`) i uzupelnij m.in.:
+2. Skonfiguruj `.env` (na bazie `.env.example`), przykladowo:
 
 ```env
 APP_URL=http://localhost
@@ -52,11 +77,11 @@ DB_HOST=pgsql
 DB_PORT=5432
 DB_DATABASE=laravel
 DB_USERNAME=sail
-DB_PASSWORD=password
+DB_PASSWORD=<UZUPELNIJ>
 QUEUE_CONNECTION=database
 
 SMS_DRIVER=smsapi
-SMSAPI_TOKEN=twoj_token
+SMSAPI_TOKEN=<UZUPELNIJ>
 # SMS_FROM=TwojNadawca   # tylko jesli masz zatwierdzone pole nadawcy w SMSAPI
 ```
 
@@ -115,7 +140,7 @@ W `.env`:
 
 ```env
 SMS_DRIVER=smsapi
-SMSAPI_TOKEN=twoj_token_smsapi
+SMSAPI_TOKEN=<UZUPELNIJ>
 SMS_FROM=
 QUEUE_CONNECTION=database
 ```
@@ -151,8 +176,6 @@ Dla domeny produkcyjnej (`https://studio.cudawiankiphoto.pl`) aplikacja dziala z
 
 W produkcji warto wymusic scheme `https`:
 
-- w `AppServiceProvider::boot()`:
-
 ```php
 if (config('app.env') === 'production') {
     URL::forceScheme('https');
@@ -181,16 +204,9 @@ WWWGROUP=1000
 ## Przydatne komendy
 
 ```bash
-# status kontenerow
 docker compose -f docker-compose.studio.yml ps
-
-# logi aplikacji
 docker compose -f docker-compose.studio.yml logs app --tail=100
-
-# log Laravel
 docker compose -f docker-compose.studio.yml exec app tail -n 100 storage/logs/laravel.log
-
-# cache clear
 docker compose -f docker-compose.studio.yml exec app php artisan config:clear
 docker compose -f docker-compose.studio.yml exec app php artisan route:clear
 docker compose -f docker-compose.studio.yml exec app php artisan view:clear
@@ -200,4 +216,3 @@ docker compose -f docker-compose.studio.yml exec app php artisan view:clear
 
 - Nie commituj prawdziwych tokenow (`SMSAPI_TOKEN`, hasla DB, APP_KEY).
 - Trzymaj sekrety tylko w produkcyjnym `.env`.
-
