@@ -1,3 +1,117 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-slate-800;
+    background:
+      radial-gradient(circle at top left, rgba(255, 232, 238, 0.7), transparent 24%),
+      radial-gradient(circle at top right, rgba(230, 245, 239, 0.7), transparent 22%),
+      linear-gradient(180deg, #fffaf8 0%, #fffdfb 42%, #f6fbfa 100%);
+  }
+}
+
+@layer components {
+  .calendar-shell .fc {
+    --fc-border-color: #efdfda;
+    --fc-page-bg-color: rgba(255, 255, 255, 0.88);
+    --fc-neutral-bg-color: #fff8f5;
+    --fc-now-indicator-color: #cf7f8e;
+    color: #4f403c;
+    font-size: 0.95rem;
+  }
+
+  .calendar-shell .fc-scrollgrid,
+  .calendar-shell .fc-theme-standard td,
+  .calendar-shell .fc-theme-standard th {
+    border-color: #efdfda;
+  }
+
+  .calendar-shell .fc-col-header-cell {
+    background: linear-gradient(180deg, #fff7f4 0%, #fffefd 100%);
+  }
+
+  .calendar-shell .fc-col-header-cell-cushion,
+  .calendar-shell .fc-datagrid-cell-cushion {
+    color: #3d2f2a;
+    font-weight: 600;
+    padding: 0.9rem 0.75rem;
+  }
+
+  .calendar-shell .fc-timegrid-slot-label-cushion {
+    color: #8f7972;
+    font-weight: 600;
+    padding-right: 0.75rem;
+  }
+
+  .calendar-shell .fc-timegrid-slot {
+    background: linear-gradient(180deg, rgba(255, 250, 248, 0.78) 0%, rgba(255, 255, 255, 0.92) 100%);
+  }
+
+  .calendar-shell .fc-timegrid-slot-minor {
+    border-top-style: dotted;
+    border-top-color: #f1e4de;
+  }
+
+  .calendar-shell .fc-timegrid-col.fc-day-today,
+  .calendar-shell .fc-timegrid-col-bg .fc-day-today {
+    background: linear-gradient(180deg, rgba(255, 243, 236, 0.7) 0%, rgba(248, 252, 250, 0.8) 100%) !important;
+  }
+
+  .calendar-shell .fc-resource {
+    background: linear-gradient(180deg, #fffaf8 0%, #fff 100%);
+  }
+
+  .calendar-shell .fc-datagrid-header,
+  .calendar-shell .fc-header-toolbar {
+    background: transparent;
+  }
+
+  .calendar-shell .fc-event {
+    border: 1px solid rgba(202, 145, 157, 0.22);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #f8cad1 0%, #f3d8c9 50%, #eedfd5 100%);
+    box-shadow: 0 10px 22px rgba(214, 171, 175, 0.18);
+    color: #3b2d29;
+    overflow: hidden;
+  }
+
+  .calendar-shell .fc-event-main {
+    padding: 0.35rem 0.5rem;
+  }
+
+  .calendar-shell .fc-event-title,
+  .calendar-shell .fc-event-time {
+    color: #3b2d29;
+    font-weight: 600;
+  }
+
+  .calendar-shell .fc-resourceTimeGridDay-view .fc-daygrid-body-natural .fc-daygrid-day-events {
+    margin-bottom: 0;
+  }
+
+  .calendar-shell .fc-scrollgrid-section-header > *,
+  .calendar-shell .fc-scrollgrid-section-body > * {
+    background-clip: padding-box;
+  }
+
+  .calendar-shell .fc-bg-event.fc-unavailable-slot,
+  .calendar-shell .fc-unavailable-slot {
+    background:
+      linear-gradient(135deg, rgba(226, 210, 205, 0.34) 0%, rgba(214, 194, 188, 0.5) 100%),
+      repeating-linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.18) 0,
+        rgba(255, 255, 255, 0.18) 8px,
+        rgba(255, 255, 255, 0.04) 8px,
+        rgba(255, 255, 255, 0.04) 16px
+      );
+    opacity: 0.9;
+  }
+
+  .calendar-shell .fc-daygrid-day-frame,
+  .calendar-shell .fc-timegrid-col-frame {
+    min-height: 100%;
+  }
+}

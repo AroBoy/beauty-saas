@@ -26,6 +26,7 @@
                     <tr>
                         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Nazwa</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Aktywny</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Grafik</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Kolor</th>
                         <th class="px-4 py-3"></th>
                     </tr>
@@ -35,6 +36,18 @@
                         <tr>
                             <td class="px-4 py-3 text-sm text-gray-900">{{ $worker->name }}</td>
                             <td class="px-4 py-3 text-sm text-gray-700">{{ $worker->active ? 'tak' : 'nie' }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">
+                                @php
+                                    $workingDays = $worker->schedules->where('is_working', true)->count();
+                                    $nextTimeOff = $worker->timeOffs->firstWhere('ends_at', '>=', now());
+                                @endphp
+                                <div>{{ $workingDays ?: 7 }} dni pracy / tydzień</div>
+                                @if($nextTimeOff)
+                                    <div class="mt-1 text-xs text-rose-600">
+                                        Nieobecność: {{ $nextTimeOff->starts_at->format('d.m H:i') }} - {{ $nextTimeOff->ends_at->format('d.m H:i') }}
+                                    </div>
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-sm">
                                 @if($worker->color_hex)
                                     <span class="inline-flex items-center gap-2">
@@ -55,7 +68,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-4 py-6 text-center text-sm text-gray-500">Brak pracowników.</td>
+                            <td colspan="5" class="px-4 py-6 text-center text-sm text-gray-500">Brak pracowników.</td>
                         </tr>
                     @endforelse
                     </tbody>

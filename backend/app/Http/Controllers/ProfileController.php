@@ -18,6 +18,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'salon' => $request->user()->salon,
         ]);
     }
 
@@ -26,13 +27,28 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
+
+        if ($user->salon) {
+            $user->salon->fill([
+                'name' => $validated['company_name'] ?? null,
+                'address' => $validated['company_address'] ?? null,
+                'phone' => $validated['company_phone'] ?? null,
+                'email' => $validated['company_email'] ?? null,
+            ])->save();
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

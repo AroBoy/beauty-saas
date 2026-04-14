@@ -112,6 +112,15 @@ class AppointmentService
 
     protected function assertWorkerAvailable(int $workerId, CarbonImmutable $startsAt, int $durationMin, ?int $ignoreAppointmentId = null): void
     {
+        $worker = Worker::with(['schedules', 'timeOffs'])->findOrFail($workerId);
+        $availabilityError = app(WorkerAvailabilityService::class)->validate($worker, $startsAt, $durationMin);
+
+        if ($availabilityError) {
+            throw ValidationException::withMessages([
+                'starts_at' => $availabilityError,
+            ]);
+        }
+
         $endsAt = $startsAt->addMinutes($durationMin);
 
         $overlapExists = Appointment::query()

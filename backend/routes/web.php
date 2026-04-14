@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\WorkerController;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth', 'tenant', 'verified'])->group(function () {
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::resource('workers', WorkerController::class)->except('show');
     Route::get('clients/search', [ClientController::class, 'search'])->name('clients.search');

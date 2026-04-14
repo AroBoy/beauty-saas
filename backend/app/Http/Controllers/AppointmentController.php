@@ -8,7 +8,9 @@ use App\Models\Client;
 use App\Models\Service;
 use App\Models\Worker;
 use App\Services\AppointmentService;
+use App\Services\WorkerAvailabilityService;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,7 +19,10 @@ use Illuminate\View\View;
 
 class AppointmentController extends Controller
 {
-    public function __construct(private readonly AppointmentService $service)
+    public function __construct(
+        private readonly AppointmentService $service,
+        private readonly WorkerAvailabilityService $availabilityService
+    )
     {
     }
 
@@ -100,8 +105,7 @@ class AppointmentController extends Controller
     {
         $start = $request->date ? Carbon::parse($request->date)->startOfDay() : Carbon::today();
         $end = (clone $start)->endOfDay();
-
-        return Appointment::with(['client', 'worker', 'service'])
+        $appointments = Appointment::with(['client', 'worker', 'service'])
             ->whereBetween('starts_at', [$start, $end])
             ->where('status', '!=', 'cancelled')
             ->get()
@@ -126,6 +130,14 @@ class AppointmentController extends Controller
                 ];
             })
             ->toArray();
+
+        $workers = Worker::with(['schedules', 'timeOffs'])->get();
+        $unavailableSlots = $this->availabilityService->unavailableCalendarEvents(
+            $workers,
+            CarbonImmutable::parse($start)
+        );
+
+        return array_merge($appointments, $unavailableSlots);
     }
 
     public function move(Request $request, Appointment $appointment): Response

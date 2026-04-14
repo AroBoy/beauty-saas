@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\ClientConsent;
@@ -40,12 +41,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         $resolveTenant = static function (): void {
             if (Tenant::has()) {
                 return;
             }
 
-            $tenantId = optional(request()->user())->salon_id ?? request()->session()->get('salon_id');
+            $tenantId = optional(request()->user())->salon_id ?? request()->session()->get('tenant_id');
 
             if ($tenantId) {
                 Tenant::set((int) $tenantId);
@@ -71,3 +76,4 @@ class AppServiceProvider extends ServiceProvider
         $bindTenantModel('smsJob', SmsJob::class);
     }
 }
+

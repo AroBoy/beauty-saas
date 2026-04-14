@@ -37,4 +37,14 @@ class Worker extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function schedules()
+    {
+        return $this->hasMany(WorkerSchedule::class)->orderBy('day_of_week');
+    }
+
+    public function timeOffs()
+    {
+        return $this->hasMany(WorkerTimeOff::class)->orderBy('starts_at');
+    }
 }

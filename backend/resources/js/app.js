@@ -96,6 +96,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${yyyy}-${mm}-${dd}`;
     };
 
+    const formatCalendarLabel = (d) => {
+        const formattedDate = new Intl.DateTimeFormat('pl-PL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        }).format(d);
+        const weekday = new Intl.DateTimeFormat('pl-PL', {
+            weekday: 'long',
+        }).format(d);
+
+        return `${formattedDate}, ${weekday}`;
+    };
+
     calendar = new Calendar(calendarEl, {
         plugins: [interactionPlugin, timeGridPlugin, resourceTimeGridPlugin],
         initialView: 'resourceTimeGridDay',
@@ -207,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
         datePickerInput.value = iso;
         const label = document.getElementById('calendar-day-label');
         if (label) {
-            label.textContent = `(${new Intl.DateTimeFormat('pl-PL').format(current)})`;
+            label.textContent = formatCalendarLabel(current);
         }
         startPicker.setDate(`${iso} ${startPicker.selectedDates[0]?.toTimeString().slice(0,5) || '09:00'}`);
         editStartPicker?.setDate(`${iso} ${editStartPicker?.selectedDates[0]?.toTimeString().slice(0,5) || '09:00'}`);

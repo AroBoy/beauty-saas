@@ -28,7 +28,14 @@ class SmsapiGateway implements SmsGateway
             ->post($this->endpoint, $payload);
 
         if ($response->successful()) {
-            $id = $response->json('message_id') ?? $response->body();
+            $body = trim($response->body());
+
+            // SMSAPI can return transport-level 200 responses with an ERROR code in the body.
+            if ($body !== '' && str_starts_with(mb_strtoupper($body), 'ERROR:')) {
+                return SmsResult::fail($body);
+            }
+
+            $id = $response->json('message_id') ?? $body;
 
             return SmsResult::ok($id);
         }

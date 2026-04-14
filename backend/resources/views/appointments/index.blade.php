@@ -5,19 +5,24 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-8 bg-[radial-gradient(circle_at_top_left,#ffe8ee_0%,transparent_24%),radial-gradient(circle_at_top_right,#e6f5ef_0%,transparent_22%),linear-gradient(180deg,#fffaf8_0%,#fffdfb_42%,#f6fbfa_100%)]">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-[2rem] border border-[#efd7dc] bg-[linear-gradient(135deg,#fff0f3_0%,#fff8f3_45%,#eef8f5_100%)] px-6 py-6 shadow-[0_18px_50px_rgba(214,176,187,0.18)]">
                 <div>
-                    <h1 class="text-2xl font-semibold text-gray-900">Kalendarz <span id="calendar-day-label" class="text-gray-500">({{ $date }})</span></h1>
-                    <p class="text-sm text-gray-500">Przeciągaj wizyty między pracownikami i godzinami.</p>
+                    <p class="mb-2 inline-flex rounded-full border border-white/70 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#a06f77] shadow-sm">
+                        Kalendarz dnia
+                    </p>
+                    <h1 class="text-3xl font-semibold tracking-tight text-[#342824]">
+                        Kalendarz <span id="calendar-day-label" class="text-[#7b6966]">{{ \Carbon\Carbon::parse($date)->locale('pl')->translatedFormat('d.m.Y, l') }}</span>
+                    </h1>
+                    <p class="mt-2 text-sm text-[#786664]">Przeciągaj wizyty między pracownikami i godzinami.</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button type="button" id="prev-day" class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">←</button>
-                    <button type="button" id="today" class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Dziś</button>
-                    <button type="button" id="next-day" class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">→</button>
-                    <input type="text" id="date-picker" value="{{ $date }}" class="rounded border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 w-32">
-                    <button type="button" id="qa-open" class="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">
+                    <button type="button" id="prev-day" class="rounded-full border border-[#e6cac3] bg-white/80 px-3 py-2 text-sm text-[#6f5b57] shadow-sm transition hover:bg-white">←</button>
+                    <button type="button" id="today" class="rounded-full border border-[#e6cac3] bg-white/80 px-4 py-2 text-sm font-medium text-[#6f5b57] shadow-sm transition hover:bg-white">Dziś</button>
+                    <button type="button" id="next-day" class="rounded-full border border-[#e6cac3] bg-white/80 px-3 py-2 text-sm text-[#6f5b57] shadow-sm transition hover:bg-white">→</button>
+                    <input type="text" id="date-picker" value="{{ $date }}" class="w-32 rounded-full border-[#e6cac3] bg-white/85 text-sm text-[#574844] shadow-sm focus:border-[#d9ada3] focus:ring-[#e6c3bb]">
+                    <button type="button" id="qa-open" class="rounded-full bg-[linear-gradient(135deg,#e8b4ba_0%,#efc5b8_45%,#e8d4bc_100%)] px-5 py-2 text-sm font-semibold text-[#2f2522] shadow-[0_12px_30px_rgba(220,182,180,0.24)] transition hover:brightness-[0.99]">
                         Dodaj wizytę
                     </button>
                 </div>
@@ -33,7 +38,7 @@
                 data-resources="{{ route('appointments.resources') }}"
                 data-clients-search="{{ route('clients.search') }}"
                 data-move="{{ route('appointments.index') }}"
-                class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
+                class="calendar-shell overflow-hidden rounded-[2rem] border border-[#efdcd7] bg-white/90 shadow-[0_20px_55px_rgba(219,193,186,0.14)] backdrop-blur"
             ></div>
         </div>
     </div>
