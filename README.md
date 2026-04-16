@@ -104,11 +104,10 @@ SMSAPI_TOKEN=<UZUPELNIJ>
 ./vendor/bin/sail npm run build
 ```
 
-6. Uruchom worker i scheduler:
+6. Uruchom scheduler:
 
 ```bash
 ./vendor/bin/sail artisan schedule:work
-./vendor/bin/sail artisan queue:work
 ```
 
 ## Uruchomienie produkcyjne (docker-compose.studio.yml)
@@ -116,16 +115,18 @@ SMSAPI_TOKEN=<UZUPELNIJ>
 W produkcji uzywamy `/backend/docker-compose.studio.yml` z serwisami:
 
 - `app`
-- `queue`
 - `scheduler`
 - `pgsql`
 - `redis`
+
+Opcjonalnie:
+- `queue` - tylko jesli aplikacja bedzie miala inne zadania kolejkowane poza SMS.
 
 Start:
 
 ```bash
 cd ~/beauty-saas/backend
-APP_PORT=20182 docker compose -f docker-compose.studio.yml up -d app pgsql redis queue scheduler
+APP_PORT=20182 docker compose -f docker-compose.studio.yml up -d app pgsql redis scheduler
 ```
 
 Sprawdzenie:
@@ -153,15 +154,13 @@ Wazne:
 ## Jak dziala wysylka SMS
 
 - Komenda planisty:
-- `sms:dispatch-due` - bierze `pending` i `send_at <= now()`, zleca `SendSmsJob`.
-- Worker kolejki:
-- przetwarza zadania i zmienia status na `sent` albo `failed`.
+- `sms:dispatch-due` - bierze `pending` i `send_at <= now()`, wykonuje `SendSmsJob` od razu i zmienia status na `sent` albo `failed`.
+- Osobny worker kolejki nie jest wymagany do samej wysylki SMS.
 
 Reczne wymuszenie:
 
 ```bash
 docker compose -f docker-compose.studio.yml exec app php artisan sms:dispatch-due
-docker compose -f docker-compose.studio.yml exec app php artisan queue:work --once
 ```
 
 Podglad ostatnich SMS jobow:
@@ -192,7 +191,7 @@ To zapobiega mixed-content (zapytania `http://...` blokowane przez przegladarke)
 - brak migracji, wykonaj `php artisan migrate --force`.
 - SMS nie przychodzi mimo `Zlecono wysylke X SMS`:
 - sprawdz `sms_jobs.status` i `failure_reason`,
-- upewnij sie, ze `queue` i `scheduler` sa uruchomione.
+- upewnij sie, ze `scheduler` jest uruchomiony.
 - Warnings `WWWUSER/WWWGROUP`:
 - dodaj do `.env`:
 

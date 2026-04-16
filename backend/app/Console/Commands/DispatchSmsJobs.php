@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Jobs\SendSmsJob;
 use App\Models\SmsJob;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Bus;
 
 class DispatchSmsJobs extends Command
 {
@@ -28,11 +27,11 @@ class DispatchSmsJobs extends Command
             return self::SUCCESS;
         }
 
-        Bus::batch(
-            $due->map(fn (int $id) => new SendSmsJob($id))->all()
-        )->name('sms-dispatch')->dispatch();
+        foreach ($due as $id) {
+            dispatch_sync(new SendSmsJob($id));
+        }
 
-        $this->info("Zlecono wysyłkę {$due->count()} SMS.");
+        $this->info("Wysłano lub obsłużono {$due->count()} SMS.");
 
         return self::SUCCESS;
     }
