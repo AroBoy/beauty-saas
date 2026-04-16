@@ -198,7 +198,12 @@ class AppointmentService
         $date = $appointment->starts_at->format('Y-m-d');
         $time = $appointment->starts_at->format('H:i');
 
-        return "Przypomnienie: wizyta {$date} {$time}, {$salonName}. Potwierdz.";
+        $prefix = "Przypomnienie o wizycie: {$date} {$time}, ";
+        $suffix = '.';
+        $maxSalonNameLength = max(0, 70 - mb_strlen($prefix) - mb_strlen($suffix));
+        $safeSalonName = mb_strimwidth($salonName, 0, $maxSalonNameLength, '');
+
+        return "{$prefix}{$safeSalonName}{$suffix}";
     }
 
     protected function resolveSalonId(int $workerId): int
