@@ -198,7 +198,7 @@ class AppointmentService
         $date = $appointment->starts_at->format('Y-m-d');
         $time = $appointment->starts_at->format('H:i');
 
-        return "{$salonName} przypomina o wizycie w dniu {$date} o godz {$time}\nPROSZĘ O POTWIERDZENIE WIZYTY";
+        return "Przypomnienie: wizyta {$date} {$time}, {$salonName}. Potwierdz.";
     }
 
     protected function resolveSalonId(int $workerId): int
