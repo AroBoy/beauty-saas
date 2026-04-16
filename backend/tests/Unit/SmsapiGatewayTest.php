@@ -43,5 +43,9 @@ class SmsapiGatewayTest extends TestCase
 
         $this->assertTrue($result->success);
         $this->assertSame('123456', $result->providerMessageId);
+
+        Http::assertSent(function ($request) {
+            return $request['normalize'] === 1;
+        });
     }
 }

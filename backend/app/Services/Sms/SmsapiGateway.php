@@ -17,6 +17,7 @@ class SmsapiGateway implements SmsGateway
         $payload = [
             'to' => $message->to,
             'message' => $message->body,
+            'normalize' => 1,
         ];
 
         if ($message->from) {
