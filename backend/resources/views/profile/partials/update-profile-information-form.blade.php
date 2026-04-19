@@ -47,37 +47,6 @@
             @endif
         </div>
 
-        <div class="rounded-2xl border border-[#ecd9d3] bg-[#fffaf7] p-4">
-            <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-[#9c746a]">Dane firmy</h3>
-            <p class="mt-1 text-sm text-gray-600">Opcjonalne dane teleadresowe salonu do uzupełnienia.</p>
-
-            <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                <div class="sm:col-span-2">
-                    <x-input-label for="company_name" value="Nazwa firmy" />
-                    <x-text-input id="company_name" name="company_name" type="text" class="mt-1 block w-full" :value="old('company_name', $salon?->name)" />
-                    <x-input-error class="mt-2" :messages="$errors->get('company_name')" />
-                </div>
-
-                <div class="sm:col-span-2">
-                    <x-input-label for="company_address" value="Adres" />
-                    <x-text-input id="company_address" name="company_address" type="text" class="mt-1 block w-full" :value="old('company_address', $salon?->address)" />
-                    <x-input-error class="mt-2" :messages="$errors->get('company_address')" />
-                </div>
-
-                <div>
-                    <x-input-label for="company_phone" value="Telefon firmowy" />
-                    <x-text-input id="company_phone" name="company_phone" type="text" class="mt-1 block w-full" :value="old('company_phone', $salon?->phone)" />
-                    <x-input-error class="mt-2" :messages="$errors->get('company_phone')" />
-                </div>
-
-                <div>
-                    <x-input-label for="company_email" value="E-mail firmowy" />
-                    <x-text-input id="company_email" name="company_email" type="email" class="mt-1 block w-full" :value="old('company_email', $salon?->email)" />
-                    <x-input-error class="mt-2" :messages="$errors->get('company_email')" />
-                </div>
-            </div>
-        </div>
-
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

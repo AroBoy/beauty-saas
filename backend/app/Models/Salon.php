@@ -17,11 +17,21 @@ class Salon extends Model
         'default_visit_length_min',
         'sms_sender',
         'sms_reminder_hours',
+        'opening_time',
+        'closing_time',
+        'saturday_opening_time',
+        'saturday_closing_time',
+        'saturday_closed',
+        'sunday_opening_time',
+        'sunday_closing_time',
+        'sunday_closed',
     ];
 
     protected $casts = [
         'default_visit_length_min' => 'integer',
         'sms_reminder_hours' => 'integer',
+        'saturday_closed' => 'boolean',
+        'sunday_closed' => 'boolean',
     ];
 
     public function users()

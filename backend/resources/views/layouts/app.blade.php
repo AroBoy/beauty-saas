@@ -15,23 +15,15 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('head')
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased {{ auth()->user()?->sidebar_auto_hide ? 'sidebar-auto-hide' : 'sidebar-fixed' }} {{ (auth()->user()?->theme_mode ?? 'light') === 'dark' ? 'theme-dark' : 'theme-light' }}">
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            <div class="app-shell">
+                <main class="min-w-0 overflow-x-hidden px-4 py-4 md:px-6 md:py-6">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
 
         @stack('scripts')

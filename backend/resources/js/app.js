@@ -27,6 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const feedUrl = buildUrl(calendarEl.dataset.feed);
     const resourcesUrl = buildUrl(calendarEl.dataset.resources);
     const moveBase = buildUrl(calendarEl.dataset.move);
+    const slotMinTime = calendarEl.dataset.slotMinTime || '09:00:00';
+    const slotMaxTime = calendarEl.dataset.slotMaxTime || '17:00:00';
+    const weekdaySlotMinTime = calendarEl.dataset.weekdaySlotMinTime || slotMinTime;
+    const weekdaySlotMaxTime = calendarEl.dataset.weekdaySlotMaxTime || slotMaxTime;
+    const saturdaySlotMinTime = calendarEl.dataset.saturdaySlotMinTime || weekdaySlotMinTime;
+    const saturdaySlotMaxTime = calendarEl.dataset.saturdaySlotMaxTime || weekdaySlotMaxTime;
+    const sundaySlotMinTime = calendarEl.dataset.sundaySlotMinTime || weekdaySlotMinTime;
+    const sundaySlotMaxTime = calendarEl.dataset.sundaySlotMaxTime || weekdaySlotMaxTime;
+    const saturdayClosed = calendarEl.dataset.saturdayClosed === '1';
+    const sundayClosed = calendarEl.dataset.sundayClosed === '1';
     const modal = document.getElementById('quick-appointment-modal');
     const backdrop = document.getElementById('quick-appointment-backdrop');
     const form = document.getElementById('quick-appointment-form');
@@ -109,12 +119,48 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${formattedDate}, ${weekday}`;
     };
 
+    const resolveSlotRange = (d) => {
+        const day = d.getDay();
+
+        if (day === 6) {
+            return {
+                min: saturdaySlotMinTime,
+                max: saturdaySlotMaxTime,
+                closed: saturdayClosed,
+            };
+        }
+
+        if (day === 0) {
+            return {
+                min: sundaySlotMinTime,
+                max: sundaySlotMaxTime,
+                closed: sundayClosed,
+            };
+        }
+
+        return {
+            min: weekdaySlotMinTime,
+            max: weekdaySlotMaxTime,
+            closed: false,
+        };
+    };
+
+    const applySlotRange = (d) => {
+        const range = resolveSlotRange(d);
+        calendar.setOption('slotMinTime', range.min);
+        calendar.setOption('slotMaxTime', range.max);
+        calendar.setOption('editable', !range.closed);
+        calendar.setOption('selectable', !range.closed);
+        calendarEl.classList.toggle('is-closed', range.closed);
+        openBtn?.toggleAttribute('disabled', range.closed);
+    };
+
     calendar = new Calendar(calendarEl, {
         plugins: [interactionPlugin, timeGridPlugin, resourceTimeGridPlugin],
         initialView: 'resourceTimeGridDay',
         initialDate: date,
-        slotMinTime: '06:00:00',
-        slotMaxTime: '22:00:00',
+        slotMinTime,
+        slotMaxTime,
         slotDuration: '00:15:00',
         slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
@@ -123,7 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
         editable: true,
         droppable: false,
         eventOverlap: false,
-        height: 'auto',
+        contentHeight: 'auto',
+        expandRows: false,
+        stickyHeaderDates: false,
         resourceAreaHeaderContent: 'Pracownicy',
         selectable: true,
         resources: {
@@ -176,8 +224,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     calendar.render();
+    applySlotRange(calendar.getDate());
 
     function openModal(info) {
+        const range = resolveSlotRange(info.date || info.start || new Date());
+        if (range.closed) {
+            return;
+        }
+
         const start = info.date || info.start;
         startPicker.setDate(start, true);
         durationInput.value = durationInput.value || 30;
@@ -209,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = new Date(current);
         target.setDate(current.getDate() + offset);
         calendar.gotoDate(target);
+        applySlotRange(target);
         refreshDayInputs();
         calendar.refetchResources();
         calendar.refetchEvents();
@@ -240,7 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
         changeDay(1);
     });
     todayBtn?.addEventListener('click', () => {
-        calendar.gotoDate(new Date());
+        const today = new Date();
+        calendar.gotoDate(today);
+        applySlotRange(today);
         refreshDayInputs();
         calendar.refetchResources();
         calendar.refetchEvents();
@@ -253,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
         onChange: (selectedDates) => {
             if (selectedDates[0]) {
                 calendar.gotoDate(selectedDates[0]);
+                applySlotRange(selectedDates[0]);
                 refreshDayInputs();
                 calendar.refetchResources();
                 calendar.refetchEvents();

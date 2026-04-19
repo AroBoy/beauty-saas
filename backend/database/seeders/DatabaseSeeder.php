@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'demo@salon.test',
             'sms_sender' => 'DEMO',
             'sms_reminder_hours' => 24,
+            'opening_time' => '09:00:00',
+            'closing_time' => '17:00:00',
         ]);
 
         Tenant::set($salon->id);

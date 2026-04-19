@@ -10,53 +10,498 @@
       radial-gradient(circle at top right, rgba(230, 245, 239, 0.7), transparent 22%),
       linear-gradient(180deg, #fffaf8 0%, #fffdfb 42%, #f6fbfa 100%);
   }
+
+  body.theme-dark {
+    color: #e8e2e6;
+    background:
+      radial-gradient(circle at top left, rgba(116, 83, 103, 0.26), transparent 24%),
+      radial-gradient(circle at top right, rgba(65, 92, 100, 0.18), transparent 22%),
+      linear-gradient(180deg, #1a1b20 0%, #1d1d24 38%, #17181d 100%);
+  }
 }
 
 @layer components {
+  .app-shell {
+    margin-left: 0;
+  }
+
+  .app-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    width: 16rem;
+    border-right: 1px solid #e9d7d1;
+    background:
+      radial-gradient(circle at top, rgba(255, 238, 235, 0.45), transparent 28%),
+      linear-gradient(180deg, #fff9f7 0%, #fffdfb 45%, #f7fbfa 100%);
+    box-shadow: 0 18px 50px rgba(196, 172, 163, 0.18);
+    transition: box-shadow 0.22s ease;
+  }
+
+  body.theme-dark .app-sidebar {
+    border-right-color: rgba(97, 89, 103, 0.58);
+    background:
+      radial-gradient(circle at top, rgba(111, 85, 102, 0.18), transparent 28%),
+      linear-gradient(180deg, #202129 0%, #1b1d25 45%, #171a20 100%);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  }
+
+  .app-sidebar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1.2rem;
+    height: 100%;
+    background:
+      linear-gradient(180deg, rgba(255, 246, 243, 0.95) 0%, rgba(245, 251, 249, 0.92) 100%);
+    border-left: 1px solid rgba(233, 215, 209, 0.9);
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.7);
+  }
+
+  .app-sidebar__inner {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding: 1.25rem 1rem 1.25rem 0.95rem;
+  }
+
+  .app-sidebar__brand {
+    margin-bottom: 1.75rem;
+    border: 1px solid #edd9d1;
+    border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.82);
+    padding: 1rem;
+    box-shadow: 0 10px 30px rgba(214, 188, 180, 0.14);
+  }
+
+  body.theme-dark .app-sidebar__brand,
+  body.theme-dark .app-sidebar__link,
+  body.theme-dark .app-sidebar__logout-button {
+    border-color: rgba(97, 89, 103, 0.72);
+    background: rgba(36, 38, 47, 0.9);
+    color: #ede7eb;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+  }
+
+  body.theme-dark .app-sidebar__eyebrow,
+  body.theme-dark .app-sidebar__link-description,
+  body.theme-dark .app-sidebar__user {
+    color: #b5aab8;
+  }
+
+  body.theme-dark .app-sidebar__salon,
+  body.theme-dark .app-sidebar__link-label {
+    color: #faf6f8;
+  }
+
+  .app-sidebar__eyebrow {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #a27b71;
+  }
+
+  .app-sidebar__salon {
+    margin: 0.4rem 0 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #312623;
+  }
+
+  .app-sidebar__user {
+    margin: 0.5rem 0 0;
+    font-size: 0.88rem;
+    color: #7a6660;
+  }
+
+  .app-sidebar__nav {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .app-sidebar__link {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #edd9d1;
+    border-radius: 1.2rem;
+    background: rgba(255, 255, 255, 0.78);
+    padding: 0.95rem 1rem 0.9rem 1.15rem;
+    color: #5a4844;
+    text-decoration: none;
+    transition:
+      transform 0.18s ease,
+      background-color 0.18s ease,
+      color 0.18s ease,
+      box-shadow 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  .app-sidebar__link::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0.3rem;
+    background: linear-gradient(180deg, #d7a7ad 0%, #d9bea9 100%);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+
+  .app-sidebar__link-label {
+    display: block;
+    font-size: 0.98rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: inherit;
+  }
+
+  .app-sidebar__link-description {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #8b7470;
+  }
+
+  .app-sidebar__link:hover {
+    transform: translateX(4px) scale(1.02);
+    border-color: #dfbeb2;
+    background: #ffffff;
+    color: #2f2522;
+    box-shadow: 0 14px 24px rgba(215, 187, 177, 0.22);
+  }
+
+  body.theme-dark .app-sidebar__link:hover,
+  body.theme-dark .app-sidebar__logout-button:hover {
+    background: rgba(47, 50, 61, 0.98);
+    color: #fff9fb;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.28);
+  }
+
+  .app-sidebar__link:hover::before {
+    opacity: 1;
+  }
+
+  .app-sidebar__link:hover .app-sidebar__link-description {
+    color: #6b5853;
+  }
+
+  .app-sidebar__link.is-active {
+    transform: scale(1.02);
+    border-color: #d5b2a8;
+    background: linear-gradient(135deg, #f0c7ce 0%, #f1d5c8 52%, #eee7dc 100%);
+    color: #241c19;
+    box-shadow: 0 18px 30px rgba(188, 150, 146, 0.24);
+  }
+
+  body.theme-dark .app-sidebar__link.is-active {
+    border-color: rgba(152, 119, 145, 0.55);
+    background: linear-gradient(135deg, rgba(78, 60, 78, 0.98) 0%, rgba(63, 67, 82, 0.98) 52%, rgba(50, 56, 70, 0.98) 100%);
+    color: #fff9fb;
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  body.theme-dark .app-sidebar__link::before {
+    background: linear-gradient(180deg, #d39ac0 0%, #a7b7d8 100%);
+  }
+
+  .app-sidebar__link.is-active::before {
+    opacity: 1;
+  }
+
+  .app-sidebar__link.is-active .app-sidebar__link-description {
+    color: #66514c;
+  }
+
+  .app-sidebar__logout {
+    margin-top: 1rem;
+  }
+
+  .app-sidebar__logout-button {
+    width: 100%;
+    border: 1px solid #e5cfc8;
+    border-radius: 1.15rem;
+    background: #fff;
+    padding: 0.95rem 1rem;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #614f4a;
+    transition:
+      transform 0.18s ease,
+      background-color 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .app-sidebar__logout-button:hover {
+    transform: translateX(4px);
+    background: #fff8f5;
+    box-shadow: 0 14px 24px rgba(215, 187, 177, 0.22);
+  }
+
+  @media (min-width: 1024px) {
+    .app-shell {
+      margin-left: 16rem;
+    }
+
+    .app-sidebar::after {
+      display: none;
+    }
+
+    body.sidebar-auto-hide .app-shell {
+      margin-left: 0;
+    }
+
+    body.sidebar-auto-hide .app-sidebar {
+      transform: translateX(calc(-100% + 1.2rem));
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    body.sidebar-auto-hide .app-sidebar:hover,
+    body.sidebar-auto-hide .app-sidebar:focus-within {
+      transform: translateX(0);
+      box-shadow: 0 22px 56px rgba(196, 172, 163, 0.22);
+    }
+
+    body.sidebar-auto-hide .app-sidebar::after {
+      display: block;
+    }
+  }
+
   .calendar-shell .fc {
-    --fc-border-color: #efdfda;
-    --fc-page-bg-color: rgba(255, 255, 255, 0.88);
-    --fc-neutral-bg-color: #fff8f5;
-    --fc-now-indicator-color: #cf7f8e;
-    color: #4f403c;
-    font-size: 0.95rem;
+    --fc-border-color: #e7d5ce;
+    --fc-page-bg-color: rgba(255, 255, 255, 0.96);
+    --fc-neutral-bg-color: #fff9f6;
+    --fc-now-indicator-color: #b95f72;
+    color: #3d302d;
+    font-size: 0.98rem;
+  }
+
+  .calendar-shell.is-closed {
+    position: relative;
+  }
+
+  .calendar-shell.is-closed::after {
+    content: attr(data-closed-message);
+    position: absolute;
+    inset: 6rem 1.5rem 1.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed rgba(180, 145, 148, 0.45);
+    border-radius: 1.5rem;
+    background: rgba(255, 249, 246, 0.72);
+    color: #7b6661;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-align: center;
+    backdrop-filter: blur(3px);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  body.theme-dark .calendar-shell.is-closed::after {
+    border-color: rgba(146, 123, 139, 0.46);
+    background: rgba(28, 31, 39, 0.74);
+    color: #d7ccd5;
+  }
+
+  body.theme-dark .calendar-shell .fc {
+    --fc-border-color: rgba(89, 84, 98, 0.72);
+    --fc-page-bg-color: rgba(31, 33, 41, 0.96);
+    --fc-neutral-bg-color: #252832;
+    color: #efe8ec;
+  }
+
+  body.theme-dark .calendar-shell .fc-scrollgrid,
+  body.theme-dark .calendar-shell .fc-theme-standard td,
+  body.theme-dark .calendar-shell .fc-theme-standard th {
+    border-color: rgba(96, 85, 91, 0.72);
+  }
+
+  body.theme-dark .calendar-shell .fc-col-header-cell {
+    background: linear-gradient(180deg, #2a2d38 0%, #21242c 100%);
+  }
+
+  body.theme-dark .calendar-shell .fc-col-header-cell-cushion,
+  body.theme-dark .calendar-shell .fc-datagrid-cell-cushion,
+  body.theme-dark .calendar-shell .fc-timegrid-slot-label-cushion {
+    color: #f4eae5;
+  }
+
+  body.theme-dark .calendar-shell .fc-timegrid-slot {
+    background: linear-gradient(180deg, rgba(38, 40, 49, 0.96) 0%, rgba(28, 31, 39, 1) 100%);
+  }
+
+  body.theme-dark .calendar-shell .fc-event {
+    border-color: rgba(203, 155, 191, 0.26);
+    background: linear-gradient(135deg, #6a4f66 0%, #6d617f 52%, #55677a 100%);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    color: #fff8fb;
+  }
+
+  body.theme-dark .dashboard-page {
+    background:
+      radial-gradient(circle at top left, rgba(116, 83, 103, 0.2) 0%, transparent 26%),
+      radial-gradient(circle at top right, rgba(70, 96, 105, 0.14) 0%, transparent 24%),
+      linear-gradient(180deg, #1a1b20 0%, #1d1d24 45%, #17181d 100%);
+  }
+
+  body.theme-dark .dashboard-hero,
+  body.theme-dark .dashboard-panel,
+  body.theme-dark .dashboard-stat,
+  body.theme-dark .dashboard-appointment,
+  body.theme-dark .dashboard-next,
+  body.theme-dark .settings-panel {
+    border-color: rgba(93, 86, 100, 0.7) !important;
+    background: linear-gradient(180deg, rgba(36, 38, 47, 0.94) 0%, rgba(29, 31, 39, 0.98) 100%) !important;
+    color: #ede7eb !important;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22) !important;
+  }
+
+  body.theme-dark .dashboard-hero {
+    background:
+      radial-gradient(circle at top left, rgba(127, 92, 119, 0.14) 0%, transparent 26%),
+      radial-gradient(circle at top right, rgba(83, 115, 126, 0.12) 0%, transparent 24%),
+      linear-gradient(135deg, rgba(42, 39, 50, 0.98) 0%, rgba(33, 37, 48, 0.98) 45%, rgba(29, 36, 45, 0.98) 100%) !important;
+  }
+
+  body.theme-dark .dashboard-page h1,
+  body.theme-dark .dashboard-page h2,
+  body.theme-dark .dashboard-page h3,
+  body.theme-dark .settings-page h1,
+  body.theme-dark .settings-page h2 {
+    color: #f6eef2 !important;
+  }
+
+  body.theme-dark .dashboard-page p,
+  body.theme-dark .dashboard-page span,
+  body.theme-dark .settings-page p,
+  body.theme-dark .settings-page span,
+  body.theme-dark .settings-page label {
+    color: #c7bcc7 !important;
+  }
+
+  body.theme-dark .dashboard-page .text-\[\#2f2522\],
+  body.theme-dark .dashboard-page .text-\[\#342824\],
+  body.theme-dark .dashboard-page .text-\[\#5e4d49\],
+  body.theme-dark .dashboard-page .text-\[\#6f5d5d\],
+  body.theme-dark .dashboard-page .text-\[\#73615c\],
+  body.theme-dark .dashboard-page .text-\[\#8a7771\],
+  body.theme-dark .dashboard-page .text-\[\#94766e\],
+  body.theme-dark .settings-page .text-\[\#342824\],
+  body.theme-dark .settings-page .text-\[\#756562\],
+  body.theme-dark .settings-page .text-\[\#4f403d\] {
+    color: #d7ced8 !important;
+  }
+
+  body.theme-dark .dashboard-page .text-\[\#a06f77\],
+  body.theme-dark .dashboard-page .text-\[\#b18477\],
+  body.theme-dark .dashboard-page .text-\[\#b37b70\],
+  body.theme-dark .dashboard-page .text-\[\#9877a7\],
+  body.theme-dark .dashboard-page .text-\[\#689786\],
+  body.theme-dark .dashboard-page .text-\[\#7a5953\],
+  body.theme-dark .dashboard-page .text-\[\#ad8b83\],
+  body.theme-dark .dashboard-page .text-\[\#7f9d93\],
+  body.theme-dark .dashboard-page .text-\[\#a183a1\],
+  body.theme-dark .settings-page .text-\[\#9c746a\] {
+    color: #d4a9c7 !important;
+  }
+
+  body.theme-dark .dashboard-action {
+    border-color: rgba(93, 86, 100, 0.72) !important;
+    background: linear-gradient(180deg, rgba(44, 46, 57, 0.96) 0%, rgba(36, 38, 47, 0.98) 100%) !important;
+  }
+
+  body.theme-dark .dashboard-action--primary {
+    background: linear-gradient(135deg, rgba(112, 81, 108, 0.98) 0%, rgba(95, 81, 112, 0.98) 45%, rgba(73, 89, 112, 0.98) 100%) !important;
+  }
+
+  body.theme-dark .dashboard-action--green {
+    background: linear-gradient(180deg, rgba(38, 56, 58, 0.96) 0%, rgba(33, 47, 50, 0.98) 100%) !important;
+  }
+
+  body.theme-dark .dashboard-action--violet {
+    background: linear-gradient(180deg, rgba(51, 45, 61, 0.96) 0%, rgba(42, 39, 52, 0.98) 100%) !important;
+  }
+
+  body.theme-dark .settings-page input,
+  body.theme-dark .settings-page select {
+    border-color: rgba(93, 86, 100, 0.72) !important;
+    background: rgba(34, 36, 44, 0.96) !important;
+    color: #f2eaf0 !important;
+  }
+
+  body.theme-dark .settings-page option {
+    background: #23252d;
+    color: #f2eaf0;
   }
 
   .calendar-shell .fc-scrollgrid,
   .calendar-shell .fc-theme-standard td,
   .calendar-shell .fc-theme-standard th {
-    border-color: #efdfda;
+    border-color: #e7d5ce;
   }
 
   .calendar-shell .fc-col-header-cell {
-    background: linear-gradient(180deg, #fff7f4 0%, #fffefd 100%);
+    background: linear-gradient(180deg, #fff4ef 0%, #fffdfb 100%);
+  }
+
+  .calendar-shell .fc-col-header,
+  .calendar-shell .fc-scrollgrid-section-header,
+  .calendar-shell .fc-scrollgrid-section-header > *,
+  .calendar-shell .fc-scrollgrid-section-header .fc-scroller,
+  .calendar-shell .fc-scrollgrid-section-header .fc-scroller-harness {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .calendar-shell .fc-scrollgrid-section-header .fc-scroller {
+    overflow: hidden !important;
   }
 
   .calendar-shell .fc-col-header-cell-cushion,
   .calendar-shell .fc-datagrid-cell-cushion {
-    color: #3d2f2a;
+    color: #2f2522;
     font-weight: 600;
-    padding: 0.9rem 0.75rem;
+    padding: 1rem 0.8rem;
+  }
+
+  .calendar-shell .fc-col-header-cell,
+  .calendar-shell .fc-timegrid-axis {
+    vertical-align: middle;
   }
 
   .calendar-shell .fc-timegrid-slot-label-cushion {
-    color: #8f7972;
+    color: #6f5b57;
     font-weight: 600;
-    padding-right: 0.75rem;
+    padding-right: 0.9rem;
   }
 
   .calendar-shell .fc-timegrid-slot {
-    background: linear-gradient(180deg, rgba(255, 250, 248, 0.78) 0%, rgba(255, 255, 255, 0.92) 100%);
+    background: linear-gradient(180deg, rgba(255, 250, 248, 0.9) 0%, rgba(255, 255, 255, 1) 100%);
+    height: 2.5rem;
   }
 
   .calendar-shell .fc-timegrid-slot-minor {
     border-top-style: dotted;
-    border-top-color: #f1e4de;
+    border-top-color: #ead9d1;
+  }
+
+  .calendar-shell .fc-timegrid-slot-lane,
+  .calendar-shell .fc-timegrid-slot-label-frame {
+    min-height: 2.5rem;
   }
 
   .calendar-shell .fc-timegrid-col.fc-day-today,
   .calendar-shell .fc-timegrid-col-bg .fc-day-today {
-    background: linear-gradient(180deg, rgba(255, 243, 236, 0.7) 0%, rgba(248, 252, 250, 0.8) 100%) !important;
+    background: linear-gradient(180deg, rgba(255, 238, 229, 0.85) 0%, rgba(246, 251, 249, 0.9) 100%) !important;
   }
 
   .calendar-shell .fc-resource {
@@ -69,22 +514,22 @@
   }
 
   .calendar-shell .fc-event {
-    border: 1px solid rgba(202, 145, 157, 0.22);
+    border: 1px solid rgba(173, 118, 130, 0.24);
     border-radius: 1rem;
-    background: linear-gradient(135deg, #f8cad1 0%, #f3d8c9 50%, #eedfd5 100%);
-    box-shadow: 0 10px 22px rgba(214, 171, 175, 0.18);
-    color: #3b2d29;
+    background: linear-gradient(135deg, #f1b9c3 0%, #edcbbb 52%, #ece0d6 100%);
+    box-shadow: 0 12px 24px rgba(194, 150, 152, 0.22);
+    color: #2d221f;
     overflow: hidden;
   }
 
   .calendar-shell .fc-event-main {
-    padding: 0.35rem 0.5rem;
+    padding: 0.45rem 0.6rem;
   }
 
   .calendar-shell .fc-event-title,
   .calendar-shell .fc-event-time {
-    color: #3b2d29;
-    font-weight: 600;
+    color: #2d221f;
+    font-weight: 700;
   }
 
   .calendar-shell .fc-resourceTimeGridDay-view .fc-daygrid-body-natural .fc-daygrid-day-events {
@@ -110,8 +555,4 @@
     opacity: 0.9;
   }
 
-  .calendar-shell .fc-daygrid-day-frame,
-  .calendar-shell .fc-timegrid-col-frame {
-    min-height: 100%;
-  }
 }

@@ -51,6 +51,8 @@ class RegisteredUserController extends Controller
                 'default_visit_length_min' => 60,
                 'sms_sender' => $request->string('sms_sender')->toString() ?: null,
                 'sms_reminder_hours' => 24,
+                'opening_time' => '09:00:00',
+                'closing_time' => '17:00:00',
             ]);
 
             return User::create([

@@ -19,6 +19,8 @@ class SalonFactory extends Factory
             'default_visit_length_min' => 30,
             'sms_sender' => 'SALON',
             'sms_reminder_hours' => 24,
+            'opening_time' => '09:00:00',
+            'closing_time' => '17:00:00',
         ];
     }
 }

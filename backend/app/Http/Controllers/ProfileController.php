@@ -18,7 +18,6 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
-            'salon' => $request->user()->salon,
         ]);
     }
 
@@ -40,15 +39,6 @@ class ProfileController extends Controller
         }
 
         $user->save();
-
-        if ($user->salon) {
-            $user->salon->fill([
-                'name' => $validated['company_name'] ?? null,
-                'address' => $validated['company_address'] ?? null,
-                'phone' => $validated['company_phone'] ?? null,
-                'email' => $validated['company_email'] ?? null,
-            ])->save();
-        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

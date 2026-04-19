@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-8 bg-[radial-gradient(circle_at_top_left,#ffe8ee_0%,transparent_24%),radial-gradient(circle_at_top_right,#e6f5ef_0%,transparent_22%),linear-gradient(180deg,#fffaf8_0%,#fffdfb_42%,#f6fbfa_100%)]">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 bg-[radial-gradient(circle_at_top_left,#ffe8ee_0%,transparent_24%),radial-gradient(circle_at_top_right,#e6f5ef_0%,transparent_22%),linear-gradient(180deg,#fffaf8_0%,#fffdfb_42%,#f6fbfa_100%)]">
+        <div class="mx-auto px-4 sm:px-6 lg:px-10">
             <div class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-[2rem] border border-[#efd7dc] bg-[linear-gradient(135deg,#fff0f3_0%,#fff8f3_45%,#eef8f5_100%)] px-6 py-6 shadow-[0_18px_50px_rgba(214,176,187,0.18)]">
                 <div>
                     <p class="mb-2 inline-flex rounded-full border border-white/70 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#a06f77] shadow-sm">
@@ -38,6 +38,17 @@
                 data-resources="{{ route('appointments.resources') }}"
                 data-clients-search="{{ route('clients.search') }}"
                 data-move="{{ route('appointments.index') }}"
+                data-slot-min-time="{{ $slotMinTime }}"
+                data-slot-max-time="{{ $slotMaxTime }}"
+                data-weekday-slot-min-time="{{ $weekdaySlotMinTime }}"
+                data-weekday-slot-max-time="{{ $weekdaySlotMaxTime }}"
+                data-saturday-slot-min-time="{{ $saturdaySlotMinTime }}"
+                data-saturday-slot-max-time="{{ $saturdaySlotMaxTime }}"
+                data-sunday-slot-min-time="{{ $sundaySlotMinTime }}"
+                data-sunday-slot-max-time="{{ $sundaySlotMaxTime }}"
+                data-saturday-closed="{{ $saturdayClosed ? '1' : '0' }}"
+                data-sunday-closed="{{ $sundayClosed ? '1' : '0' }}"
+                data-closed-message="Salon jest zamknięty tego dnia."
                 class="calendar-shell overflow-hidden rounded-[2rem] border border-[#efdcd7] bg-white/90 shadow-[0_20px_55px_rgba(219,193,186,0.14)] backdrop-blur"
             ></div>
         </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\AppSettingsController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -37,6 +38,8 @@ Route::middleware(['auth', 'tenant', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/settings', [AppSettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings', [AppSettingsController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

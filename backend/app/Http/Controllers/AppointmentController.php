@@ -29,6 +29,8 @@ class AppointmentController extends Controller
     public function index(Request $request): View
     {
         $date = $request->date ? now()->parse($request->date) : now();
+        $salon = $request->user()?->salon;
+        [$slotMinTime, $slotMaxTime] = $this->resolveCalendarHours($salon, $date);
 
         $appointments = Appointment::with(['client', 'worker', 'service'])
             ->whereDate('starts_at', $date->toDateString())
@@ -43,6 +45,16 @@ class AppointmentController extends Controller
             'date' => $date->toDateString(),
             'clients' => Client::orderBy('name')->get(),
             'services' => Service::orderBy('name')->get(),
+            'slotMinTime' => $slotMinTime,
+            'slotMaxTime' => $slotMaxTime,
+            'weekdaySlotMinTime' => substr((string) ($salon?->opening_time ?? '09:00:00'), 0, 8),
+            'weekdaySlotMaxTime' => substr((string) ($salon?->closing_time ?? '17:00:00'), 0, 8),
+            'saturdaySlotMinTime' => substr((string) ($salon?->saturday_opening_time ?: ($salon?->opening_time ?? '09:00:00')), 0, 8),
+            'saturdaySlotMaxTime' => substr((string) ($salon?->saturday_closing_time ?: ($salon?->closing_time ?? '17:00:00')), 0, 8),
+            'sundaySlotMinTime' => substr((string) ($salon?->sunday_opening_time ?: ($salon?->opening_time ?? '09:00:00')), 0, 8),
+            'sundaySlotMaxTime' => substr((string) ($salon?->sunday_closing_time ?: ($salon?->closing_time ?? '17:00:00')), 0, 8),
+            'saturdayClosed' => (bool) ($salon?->saturday_closed),
+            'sundayClosed' => (bool) ($salon?->sunday_closed),
         ]);
     }
 
@@ -161,5 +173,31 @@ class AppointmentController extends Controller
             'clients' => Client::orderBy('name')->get(),
             'services' => Service::orderBy('name')->get(),
         ]);
+    }
+
+    protected function resolveCalendarHours($salon, Carbon $date): array
+    {
+        $defaultOpening = substr((string) ($salon?->opening_time ?? '09:00:00'), 0, 8);
+        $defaultClosing = substr((string) ($salon?->closing_time ?? '17:00:00'), 0, 8);
+
+        if (!$salon) {
+            return [$defaultOpening, $defaultClosing];
+        }
+
+        if ($date->isSaturday()) {
+            return [
+                substr((string) ($salon->saturday_opening_time ?: $defaultOpening), 0, 8),
+                substr((string) ($salon->saturday_closing_time ?: $defaultClosing), 0, 8),
+            ];
+        }
+
+        if ($date->isSunday()) {
+            return [
+                substr((string) ($salon->sunday_opening_time ?: $defaultOpening), 0, 8),
+                substr((string) ($salon->sunday_closing_time ?: $defaultClosing), 0, 8),
+            ];
+        }
+
+        return [$defaultOpening, $defaultClosing];
     }
 }
