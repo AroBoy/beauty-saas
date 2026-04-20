@@ -15,12 +15,30 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('head')
     </head>
-    <body class="font-sans antialiased {{ auth()->user()?->sidebar_auto_hide ? 'sidebar-auto-hide' : 'sidebar-fixed' }} {{ (auth()->user()?->theme_mode ?? 'light') === 'dark' ? 'theme-dark' : 'theme-light' }}">
+    <body
+        x-data="{
+            mobileSidebarOpen: false,
+            desktopSidebarCollapsed: localStorage.getItem('desktopSidebarCollapsed') === '1'
+        }"
+        x-init="$watch('desktopSidebarCollapsed', value => localStorage.setItem('desktopSidebarCollapsed', value ? '1' : '0'))"
+        class="font-sans antialiased sidebar-fixed {{ (auth()->user()?->theme_mode ?? 'light') === 'dark' ? 'theme-dark' : 'theme-light' }}"
+    >
         <div class="min-h-screen bg-gray-100">
+            <button
+                type="button"
+                class="app-mobile-menu-button xl:hidden"
+                @click="mobileSidebarOpen = true"
+                aria-label="Otwórz menu"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             @include('layouts.navigation')
 
-            <div class="app-shell">
-                <main class="min-w-0 overflow-x-hidden px-4 py-4 md:px-6 md:py-6">
+            <div class="app-shell" :class="{ 'is-sidebar-collapsed': desktopSidebarCollapsed }">
+                <main class="min-w-0 overflow-x-hidden px-4 py-20 md:px-6 md:py-24 xl:px-6 xl:py-6">
                     {{ $slot }}
                 </main>
             </div>
