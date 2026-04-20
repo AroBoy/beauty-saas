@@ -22,7 +22,6 @@ class AppSettingsUpdateRequest extends FormRequest
             'sunday_closing_time' => ['nullable', 'date_format:H:i'],
             'saturday_closed' => ['nullable', 'boolean'],
             'sunday_closed' => ['nullable', 'boolean'],
-            'sidebar_auto_hide' => ['nullable', 'boolean'],
             'theme_mode' => ['required', Rule::in(['light', 'dark'])],
         ];
     }

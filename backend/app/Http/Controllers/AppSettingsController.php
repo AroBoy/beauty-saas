@@ -24,7 +24,6 @@ class AppSettingsController extends Controller
         $user = $request->user();
 
         $user->fill([
-            'sidebar_auto_hide' => (bool) ($validated['sidebar_auto_hide'] ?? false),
             'theme_mode' => $validated['theme_mode'],
         ])->save();
 

@@ -163,21 +163,6 @@
                             <x-input-error class="mt-2" :messages="$errors->get('theme_mode')" />
                         </div>
 
-                        <label class="inline-flex items-start gap-3 text-sm text-[#4f403d]">
-                            <input type="hidden" name="sidebar_auto_hide" value="0">
-                            <input
-                                type="checkbox"
-                                name="sidebar_auto_hide"
-                                value="1"
-                                class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                {{ old('sidebar_auto_hide', $user->sidebar_auto_hide) ? 'checked' : '' }}
-                            >
-                            <span>
-                                <span class="block font-medium text-[#342824]">Chowany sidebar na desktopie</span>
-                                <span class="mt-1 block text-[#756562]">Menu chowa się i wysuwa po najechaniu na lewą krawędź.</span>
-                            </span>
-                        </label>
-                        <x-input-error class="mt-2" :messages="$errors->get('sidebar_auto_hide')" />
                     </div>
                 </section>
 

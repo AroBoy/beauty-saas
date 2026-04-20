@@ -1,4 +1,5 @@
 @php
+    $currentUser = Auth::user();
     $links = [
         [
             'label' => 'Dashboard',
@@ -36,13 +37,23 @@
             'route' => route('profile.edit'),
             'active' => request()->routeIs('profile.*'),
         ],
-        [
+    ];
+
+    if ($currentUser?->isAdmin()) {
+        $links[] = [
+            'label' => 'Uzytkownicy',
+            'description' => 'Admin i operatorzy',
+            'route' => route('users.index'),
+            'active' => request()->routeIs('users.*'),
+        ];
+
+        $links[] = [
             'label' => 'Ustawienia',
             'description' => 'Salon i interfejs',
             'route' => route('settings.edit'),
             'active' => request()->routeIs('settings.*'),
-        ],
-    ];
+        ];
+    }
 @endphp
 
 <div
@@ -83,8 +94,8 @@
 
         <div class="app-sidebar__brand">
             <p class="app-sidebar__eyebrow">Studio</p>
-            <p class="app-sidebar__salon">{{ Auth::user()->salon?->name ?? 'Panel' }}</p>
-            <p class="app-sidebar__user">{{ Auth::user()->name }}</p>
+            <p class="app-sidebar__salon">{{ $currentUser?->salon?->name ?? 'Panel' }}</p>
+            <p class="app-sidebar__user">{{ $currentUser?->name }}</p>
         </div>
 
         <nav class="app-sidebar__nav">

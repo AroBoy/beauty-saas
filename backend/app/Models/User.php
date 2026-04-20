@@ -63,4 +63,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Worker::class);
     }
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->role, ['admin', 'owner'], true);
+    }
+
+    public function isOperator(): bool
+    {
+        return $this->role === 'operator';
+    }
 }

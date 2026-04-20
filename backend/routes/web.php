@@ -5,6 +5,7 @@ use App\Http\Controllers\AppSettingsController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SalonUserController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
@@ -38,8 +39,12 @@ Route::middleware(['auth', 'tenant', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/settings', [AppSettingsController::class, 'edit'])->name('settings.edit');
-    Route::patch('/settings', [AppSettingsController::class, 'update'])->name('settings.update');
+
+    Route::middleware('admin')->group(function () {
+        Route::resource('users', SalonUserController::class)->except('show');
+        Route::get('/settings', [AppSettingsController::class, 'edit'])->name('settings.edit');
+        Route::patch('/settings', [AppSettingsController::class, 'update'])->name('settings.update');
+    });
 });
 
 require __DIR__.'/auth.php';
